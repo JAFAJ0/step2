@@ -79,8 +79,13 @@ export const fetchConversations = () => async (dispatch) => {
 };
 
 const saveMessage = async (body) => {
-  const { data } = await axios.post("/api/messages", body);
-  return data;
+  try {
+    const { data } = await axios.post("/api/messages", body);
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+
 };
 
 const sendMessage = (data, body) => {
@@ -96,14 +101,14 @@ const sendMessage = (data, body) => {
 export const postMessage = (body) => (dispatch) => {
   try {
     const data = saveMessage(body);
-
-    if (!body.conversationId) {
-      dispatch(addConversation(body.recipientId, data.message));
-    } else {
-      dispatch(setNewMessage(data.message));
-    }
-
-    sendMessage(data, body);
+    data.then((dat) => {
+      if (!body.conversationId) {
+        dispatch(addConversation(body.recipientId, dat.message));
+      } else {
+        dispatch(setNewMessage(dat.message));
+      }
+      sendMessage(dat, body);
+    });
   } catch (error) {
     console.error(error);
   }
