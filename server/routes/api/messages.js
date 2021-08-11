@@ -8,7 +8,7 @@ router.post("/", async (req, res, next) => {
     if (!req.user) {
       return res.sendStatus(401);
     }
-    const senderId = req.user.id;
+    const senderId = req.body.senderId;
     const { recipientId, text, conversationId, sender } = req.body;
 
     // if we already know conversation id, we can save time and just add it to message and return
