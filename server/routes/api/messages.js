@@ -8,9 +8,6 @@ router.post("/", async (req, res, next) => {
     if (!req.user) {
       return res.sendStatus(401);
     }
-    if (!req.user) {
-      return res.sendStatus(401);
-    }
     const senderId = req.user.id;
     const { recipientId, text, conversationId, sender } = req.body;
 
@@ -22,8 +19,8 @@ router.post("/", async (req, res, next) => {
           id: conversationId,
         }
       });
-      //if such conversation do not exist, or its user1id is not senderid, then there must be issue.
-      if (conversation0.user1Id !== senderId || !conversation0) {
+      //if such conversation do not exist, or its user1id and user2id is not senderid, then there must be issue.
+      if ((conversation0.user1Id !== senderId && conversation0.user2Id !== senderId) || !conversation0) {
         return res.sendStatus(401);
       }
       const message = await Message.create({ senderId, text, conversationId });
