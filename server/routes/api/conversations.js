@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { User, Conversation, Message } = require("../../db/models");
+const { User, Conversation, ConversationSeen, Message } = require("../../db/models");
 const { Op } = require("sequelize");
 const onlineUsers = require("../../onlineUsers");
 
@@ -71,7 +71,31 @@ router.get("/", async (req, res, next) => {
       // set properties for notification count and latest message preview
       convoJSON.latestMessageText = convoJSON.messages[0].text;
       convoJSON.messages.reverse()
+
+      //set properties for last seen message for both users.
+      let conversationSeen = await ConversationSeen.findOne({
+        where: {
+          conversationId: convoJSON.id,
+        }
+      });
+      //if the database do not have record, no matter what happened, set seen to the lastest.
+      if (!conversationSeen) {
+        convoJSON.userSeen = convoJSON.messages.length - 1;
+        convoJSON.otherUserSeen = convoJSON.messages.length - 1;
+      }
+      //Otherwise set correct seen for correct user
+      else {
+        if (conversationSeen.user1Id === convoJSON.otherUser.id) {
+          convoJSON.otherUserSeen = conversationSeen.user1Seen;
+          convoJSON.userSeen = conversationSeen.user2Seen;
+        }
+        else {
+          convoJSON.otherUserSeen = conversationSeen.user2Seen;
+          convoJSON.userSeen = conversationSeen.user1Seen;
+        }
+      }
       conversations[i] = convoJSON;
+
     }
     res.json(conversations);
   } catch (error) {
