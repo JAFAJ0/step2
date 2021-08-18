@@ -80,8 +80,8 @@ router.get("/", async (req, res, next) => {
       });
       //if the database do not have record, no matter what happened, set seen to the lastest.
       if (!conversationSeen) {
-        convoJSON.userSeen = convoJSON.messages.length - 1;
-        convoJSON.otherUserSeen = convoJSON.messages.length - 1;
+        convoJSON.userSeen = 0;
+        convoJSON.otherUserSeen = 0;
       }
       //Otherwise set correct seen for correct user
       else {
