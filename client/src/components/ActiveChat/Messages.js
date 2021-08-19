@@ -28,7 +28,7 @@ const Messages = (props) => {
         return message.senderId === userId ? (
           <Box className={classes.root} key={message.id}>
             <SenderBubble text={message.text} time={time} />
-            {index === otherUserSeen && <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>}
+            {index + 1 === otherUserSeen && <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>}
           </Box>
         ) : (
           <OtherUserBubble key={message.id} text={message.text} time={time} otherUser={otherUser} />

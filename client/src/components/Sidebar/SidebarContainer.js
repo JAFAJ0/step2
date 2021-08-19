@@ -24,7 +24,7 @@ const SidebarContainer = (props) => {
     setSearchTerm(event.target.value);
   };
 
-  return <Sidebar handleChange={handleChange} searchTerm={searchTerm} userid={props.userid} />;
+  return <Sidebar handleChange={handleChange} searchTerm={searchTerm} userId={props.userId} />;
 };
 
 const mapDispatchToProps = (dispatch) => {

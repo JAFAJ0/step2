@@ -31,7 +31,7 @@ const ChatContent = (props) => {
 
   const { conversation } = props;
   const { latestMessageText, otherUser } = conversation;
-  const unseen = conversation.messages.length - conversation.userSeen;
+  const unseen = !isNaN(conversation.messages.length - conversation.userSeen) ? conversation.messages.length - conversation.userSeen : conversation.messages.length;
   return (
     <Box className={classes.root}>
       <Box className={classes.root}>

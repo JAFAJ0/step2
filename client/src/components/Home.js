@@ -53,7 +53,7 @@ class Home extends Component {
         </Button>
         <Grid container component="main" className={classes.root}>
           <CssBaseline />
-          <SidebarContainer userid={this.props.user.id} />
+          <SidebarContainer userId={this.props.user.id} />
           <ActiveChat />
         </Grid>
       </>
