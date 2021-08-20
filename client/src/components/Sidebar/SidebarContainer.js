@@ -6,7 +6,6 @@ import { clearSearchedUsers } from "../../store/conversations";
 
 const SidebarContainer = (props) => {
   const { searchUsers, clearSearchedUsers } = props;
-
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleChange = async (event) => {
@@ -25,7 +24,7 @@ const SidebarContainer = (props) => {
     setSearchTerm(event.target.value);
   };
 
-  return <Sidebar handleChange={handleChange} searchTerm={searchTerm} />;
+  return <Sidebar handleChange={handleChange} searchTerm={searchTerm} userId={props.userId} />;
 };
 
 const mapDispatchToProps = (dispatch) => {

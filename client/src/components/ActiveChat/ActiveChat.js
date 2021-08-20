@@ -24,7 +24,6 @@ const ActiveChat = (props) => {
   const classes = useStyles();
   const { user } = props;
   const conversation = props.conversation || {};
-
   return (
     <Box className={classes.root}>
       {conversation.otherUser && (
@@ -38,6 +37,7 @@ const ActiveChat = (props) => {
               messages={conversation.messages}
               otherUser={conversation.otherUser}
               userId={user.id}
+              otherUserSeen={conversation.otherUserSeen}
             />
             <Input
               otherUser={conversation.otherUser}

@@ -6,6 +6,7 @@ import {
   setNewMessage,
   setSearchedUsers,
 } from "../conversations";
+import { setActiveChat } from "../../store/activeConversation";
 import { gotUser, setFetchingStatus } from "../user";
 
 axios.interceptors.request.use(async function (config) {
@@ -107,10 +108,48 @@ export const postMessage = (body) => async (dispatch) => {
       dispatch(setNewMessage(data.message));
     }
     sendMessage(data, body);
-
   } catch (error) {
     console.error(error);
   }
+};
+
+const saveConversationSeen = async (body) => {
+  try {
+    const { data } = await axios.post("/api/conversationSeen", body);
+    return data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const sendConversationSeen = (data, body, username) => {
+  socket.emit("update-conversation", {
+    senderId: body.senderId,
+    recipientId: body.recipientId,
+    senderSeen: body.senderSeen,
+    conversationId: data.id,
+    username: username
+  });
+};
+
+//Imitate the postMessage function above, make a post userseen data function
+//The ideal input is {recipientId, senderId, conversationId,senderSeen}
+//The conversationId cannot be null as user cannot read a conversation which is not exist 
+export const postConversationSeen = (body, username) => async (dispatch) => {
+  if (!body.conversationId) {
+    dispatch(setActiveChat(username));
+  }
+  else {
+    try {
+      const data = await saveConversationSeen(body);
+      dispatch(setActiveChat(username));
+
+      sendConversationSeen(data, body, username);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 };
 
 export const searchUsers = (searchTerm) => async (dispatch) => {
