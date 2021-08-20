@@ -32,7 +32,13 @@ class Chat extends Component {
       await this.props.setActiveChat(conversation.otherUser.username);
     }
     else {
-      await this.props.postConversationSeen(reqBody, conversation.otherUser.username);
+      if (conversation.messages.length !== conversation.userSeen) {
+        await this.props.postConversationSeen(reqBody, conversation.otherUser.username);
+      }
+      else {
+        await this.props.setActiveChat(conversation.otherUser.username);
+      }
+
     }
   };
 
