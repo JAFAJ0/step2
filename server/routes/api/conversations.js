@@ -51,13 +51,34 @@ router.get("/", async (req, res, next) => {
     for (let i = 0; i < conversations.length; i++) {
       const convo = conversations[i];
       const convoJSON = convo.toJSON();
-
+      //set properties for last seen message for both users.
+      let conversationSeen = await ConversationSeen.findOne({
+        where: {
+          conversationId: convoJSON.id,
+        }
+      });
+      //if the database do not have record, no matter what happened, set seen to the lastest.
+      if (!conversationSeen) {
+        convoJSON.userSeen = 0;
+        convoJSON.otherUserSeen = 0;
+        await ConversationSeen.create({
+          conversationId: convoJSON.id,
+          user1Seen: 0,
+          user2Seen: 0
+        });
+      }
+      const user1Seen = (!conversationSeen) ? 0 : conversationSeen.user1Seen;
+      const user2Seen = (!conversationSeen) ? 0 : conversationSeen.user2Seen;
       // set a property "otherUser" so that frontend will have easier access
       if (convoJSON.user1) {
         convoJSON.otherUser = convoJSON.user1;
+        convoJSON.otherUserSeen = user1Seen;
+        convoJSON.userSeen = user2Seen;
         delete convoJSON.user1;
       } else if (convoJSON.user2) {
         convoJSON.otherUser = convoJSON.user2;
+        convoJSON.otherUserSeen = user2Seen;
+        convoJSON.userSeen = user1Seen;
         delete convoJSON.user2;
       }
 
@@ -70,30 +91,7 @@ router.get("/", async (req, res, next) => {
 
       // set properties for notification count and latest message preview
       convoJSON.latestMessageText = convoJSON.messages[0].text;
-      convoJSON.messages.reverse()
-
-      //set properties for last seen message for both users.
-      let conversationSeen = await ConversationSeen.findOne({
-        where: {
-          conversationId: convoJSON.id,
-        }
-      });
-      //if the database do not have record, no matter what happened, set seen to the lastest.
-      if (!conversationSeen) {
-        convoJSON.userSeen = 0;
-        convoJSON.otherUserSeen = 0;
-      }
-      //Otherwise set correct seen for correct user
-      else {
-        if (conversationSeen.user1Id === convoJSON.otherUser.id) {
-          convoJSON.otherUserSeen = conversationSeen.user1Seen;
-          convoJSON.userSeen = conversationSeen.user2Seen;
-        }
-        else {
-          convoJSON.otherUserSeen = conversationSeen.user2Seen;
-          convoJSON.userSeen = conversationSeen.user1Seen;
-        }
-      }
+      convoJSON.messages.reverse();
       conversations[i] = convoJSON;
 
     }
