@@ -118,7 +118,7 @@ const saveConversationSeen = async (body) => {
     const { data } = await axios.post("/api/conversationSeen", body);
     return data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
