@@ -19,10 +19,11 @@ router.post("/", async (req, res, next) => {
                 conversationId: conversationId,
             }
         });
-        let conversation = await Conversation.findConversation(
-            senderId,
-            recipientId
-        );
+        let conversation = await Conversation.findOne({
+            where: {
+                id: conversationId,
+            }
+        });
         //If no conversation with such id, then there must be something wrong.
         if (!conversation || conversation.id !== conversationId) {
             return res.sendStatus(401);
