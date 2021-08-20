@@ -88,10 +88,19 @@ router.get("/", async (req, res, next) => {
       } else {
         convoJSON.otherUser.online = false;
       }
-
       // set properties for notification count and latest message preview
       convoJSON.latestMessageText = convoJSON.messages[0].text;
       convoJSON.messages.reverse();
+      let otherUserSeen0 = 0;
+      if (convoJSON.messages[convoJSON.otherUserSeen - 1].senderId === convoJSON.otherUser.id) {
+        for (let i = convoJSON.otherUserSeen; i > 0; i--) {
+          if (convoJSON.messages[i - 1].senderId !== convoJSON.otherUser.id) {
+            otherUserSeen0 = i;
+            break;
+          }
+        }
+        convoJSON.otherUserSeen = otherUserSeen0;
+      }
       conversations[i] = convoJSON;
 
     }

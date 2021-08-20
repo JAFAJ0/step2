@@ -21,17 +21,7 @@ const useStyles = makeStyles(() => ({
 const Messages = (props) => {
   const { messages, otherUser, userId, otherUserSeen } = props;
   const classes = useStyles();
-  function ous() {
-    let ons = 0;
-    for (var i = otherUserSeen; i > 0; i--) {
-      if (messages[i - 1].senderId === userId) {
-        ons = i;
-        break;
-      }
-    }
-    return ons;
-  }
-  const oUS = ous();
+
   return (
     <Box >
       {messages.map((message, index) => {
@@ -44,7 +34,7 @@ const Messages = (props) => {
               <OtherUserBubble text={message.text} time={time} otherUser={otherUser} />
             )}
             <Box className={classes.root} >
-              {index + 1 === oUS && <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>}
+              {index + 1 === otherUserSeen && <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>}
             </Box>
           </Box>);
       })}
