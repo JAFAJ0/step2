@@ -43,7 +43,7 @@ const Messages = (props) => {
             ) : (
               <OtherUserBubble text={message.text} time={time} otherUser={otherUser} />
             )}
-            <Box className={classes.root} mb={8}>
+            <Box className={classes.root} >
               {index + 1 === oUS && <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>}
             </Box>
           </Box>);
